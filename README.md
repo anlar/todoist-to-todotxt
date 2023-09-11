@@ -1,5 +1,7 @@
 # todoist-to-todotxt
 
+![PyPI - Version](https://img.shields.io/pypi/v/todoist-to-todotxt)
+
 Script to save tasks from Todoist to todo.txt format.
 
 It provides support for export of very limited set of Todoist's task fields (only ones that I'm using), particularly:
