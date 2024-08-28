@@ -81,7 +81,7 @@ def execute(token):
             for label in task["labels"]:
                 line += " @" + clean(label)
 
-        # additional metadate: due and rec
+        # additional metadata: due and rec
         if task["due"]:
             line += " due:" + task["due"]["date"]
 
