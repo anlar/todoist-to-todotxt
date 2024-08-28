@@ -68,7 +68,9 @@ def execute(token):
         line += task["content"]
 
         if task["description"]:
-            line += " (" + task["description"] + ")"
+            # merge description into single line (ignore empty lines)
+            desc = task["description"]
+            line += " (" + " ".join(l.strip() for l in desc.splitlines() if l) + ")"
 
         # project
         line += " +" + get_project(task["project_id"], task["section_id"],
