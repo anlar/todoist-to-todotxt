@@ -39,20 +39,20 @@ def execute(token):
     http = requests.Session()
     http.mount("https://", adapter)
 
-    tasks_r = http.get('https://api.todoist.com/rest/v2/tasks',
+    tasks_r = http.get('https://api.todoist.com/api/v1/tasks',
                          headers={"Authorization": "Bearer " + token})
     tasks_r.raise_for_status()
-    tasks = tasks_r.json()
+    tasks = tasks_r.json()['results']
 
-    projects_r = http.get('https://api.todoist.com/rest/v2/projects',
+    projects_r = http.get('https://api.todoist.com/api/v1/projects',
                             headers={"Authorization": "Bearer " + token})
     projects_r.raise_for_status()
-    projects = projects_r.json()
+    projects = projects_r.json()['results']
 
-    sections_r = http.get('https://api.todoist.com/rest/v2/sections',
+    sections_r = http.get('https://api.todoist.com/api/v1/sections',
                             headers={"Authorization": "Bearer " + token})
     sections_r.raise_for_status()
-    sections = sections_r.json()
+    sections = sections_r.json()['results']
 
     for task in tasks:
         line = ""
@@ -62,7 +62,7 @@ def execute(token):
             line += "(" + {4: "A", 3: "B", 2: "C"}.get(task["priority"]) + ") "
 
         # creation date
-        line += task["created_at"][:10] + " "
+        line += task["added_at"][:10] + " "
 
         # content
         line += task["content"]
