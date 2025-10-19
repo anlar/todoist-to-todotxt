@@ -29,30 +29,37 @@ def get_project(project_id, section_id, projects, sections):
 
     return clean(line)
 
+def load_items(code, http, token, next_cursor):
+    if next_cursor:
+        link = f'https://api.todoist.com/api/v1/{code}?cursor={next_cursor}'
+    else:
+        link = f'https://api.todoist.com/api/v1/{code}'
+
+    items_r = http.get(link,
+                       headers={"Authorization": f"Bearer {token}"})
+    items_r.raise_for_status()
+
+    items = items_r.json()['results']
+    cursor = items_r.json()['next_cursor']
+
+    if cursor:
+        items = items + load_items(code, http, token, cursor)
+
+    return items
+
 def execute(token):
     retry_strategy = Retry(
-        total=5,
-        backoff_factor=5,
-        status_forcelist=[429, 500, 502, 503, 504]
-    )
+            total=5,
+            backoff_factor=5,
+            status_forcelist=[429, 500, 502, 503, 504]
+            )
     adapter = HTTPAdapter(max_retries=retry_strategy)
     http = requests.Session()
     http.mount("https://", adapter)
 
-    tasks_r = http.get('https://api.todoist.com/api/v1/tasks',
-                         headers={"Authorization": "Bearer " + token})
-    tasks_r.raise_for_status()
-    tasks = tasks_r.json()['results']
-
-    projects_r = http.get('https://api.todoist.com/api/v1/projects',
-                            headers={"Authorization": "Bearer " + token})
-    projects_r.raise_for_status()
-    projects = projects_r.json()['results']
-
-    sections_r = http.get('https://api.todoist.com/api/v1/sections',
-                            headers={"Authorization": "Bearer " + token})
-    sections_r.raise_for_status()
-    sections = sections_r.json()['results']
+    tasks = load_items('tasks', http, token, None)
+    projects = load_items('projects', http, token, None)
+    sections = load_items('sections', http, token, None)
 
     for task in tasks:
         line = ""
