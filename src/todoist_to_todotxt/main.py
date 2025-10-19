@@ -15,12 +15,21 @@ def cli():
 def clean(line):
     return line.replace(" ", "_")
 
-def get_project(project_id, section_id, projects, sections):
+def get_project(project_id, projects):
     line = ''
     for project in projects:
         if project["id"] == project_id:
             line = project["name"]
+
+            if project['parent_id']:
+                line = line + ':' + get_project(project['parent_id'], projects)
+
             break
+
+    return line
+
+def get_project_section(project_id, section_id, projects, sections):
+    line = get_project(project_id, projects)
 
     for section in sections:
         if section["id"] == section_id:
@@ -80,8 +89,8 @@ def execute(token):
             line += " (" + " ".join(l.strip() for l in desc.splitlines() if l) + ")"
 
         # project
-        line += " +" + get_project(task["project_id"], task["section_id"],
-                                   projects, sections)
+        line += " +" + get_project_section(task["project_id"], task["section_id"],
+                                           projects, sections)
 
         # context
         if task["labels"]:
