@@ -99,7 +99,7 @@ def execute(token):
 
         # additional metadata: due and rec
         if task["due"]:
-            line += " due:" + task["due"]["date"]
+            line += " due:" + task["due"]["date"].partition("T")[0]
 
             if task["due"]["is_recurring"]:
                 line += " rec:" + clean(task["due"]["string"])
