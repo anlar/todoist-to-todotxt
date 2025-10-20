@@ -104,6 +104,10 @@ def execute(token):
             if task["due"]["is_recurring"]:
                 line += " rec:" + clean(task["due"]["string"])
 
+        # additional metadata: deadline
+        if task["deadline"]:
+            line += " deadline:" + task["deadline"]["date"]
+
         # result
         print(line)
 

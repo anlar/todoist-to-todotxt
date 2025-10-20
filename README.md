@@ -13,6 +13,7 @@ It provides support for export of limited set of Todoist's task fields, particul
 - Labels
 - Due date
 - Recurrence date
+- Deadline date
 
 Definitely NOT supported:
 
